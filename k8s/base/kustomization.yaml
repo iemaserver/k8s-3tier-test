@@ -4,3 +4,10 @@ resources:
   - mongodb.yaml
   - backend.yaml
   - frontend.yaml
+images:
+  - name: docker.io/saurabhkumbhar7/bikes-backend
+    newTag: v1
+  - name: docker.io/saurabhkumbhar7/bikes-frontend
+    newTag: v1
+  - name: docker.io/saurabhkumbhar7/bikes-mongodb
+    newTag: v1

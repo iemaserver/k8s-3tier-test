@@ -7,6 +7,17 @@ Argo CD uses a pull-based deployment model: it reads the manifests from this Git
 1. `argocd/application.yaml` should point to the GitHub repository and branch containing these manifests.
 2. The image references use the Docker Hub account `saurabhkumbhar7`. Build and push the images from the existing Dockerfiles, then commit and push the manifests to GitHub. Argo CD deploys images; it does not build them. For each release, publish a new versioned tag and update the matching tag in Git; that Git change triggers a rollout.
 
+## Automatic image releases
+
+The workflow at `.github/workflows/build-and-deploy.yml` runs when changes to `backend/`, `frontend/`, or `mongodb/` are pushed to `main`. It builds all three images, tags them with the source commit SHA, pushes them to Docker Hub, and commits the new tags to `k8s/base/kustomization.yaml`. Argo CD then detects that Git change and deploys the new images. A pull request does not deploy until its changes are pushed or merged into `main`.
+
+Before relying on the workflow, add these repository Actions secrets in GitHub under **Settings > Secrets and variables > Actions**:
+
+- `DOCKERHUB_USERNAME`: `saurabhkumbhar7`
+- `DOCKERHUB_TOKEN`: a Docker Hub access token with permission to push images
+
+The workflow requires the repository's `GITHUB_TOKEN` to have contents write permission so it can commit the updated image tags. The workflow declares that permission; branch protection rules must also allow the Actions bot to push to `main`.
+
 Build and publish the initial `v1` images from the project root (replace the username first):
 
 ```powershell
