@@ -45,7 +45,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: mongodb
-          image: ghcr.io/YOUR_GITHUB_USERNAME/bikes-mongodb:latest
+          image: docker.io/saurabhkumbhar7/bikes-mongodb:v1
           imagePullPolicy: IfNotPresent
           args:
             - mongod

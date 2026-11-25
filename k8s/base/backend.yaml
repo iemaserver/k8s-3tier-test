@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/YOUR_GITHUB_USERNAME/bikes-backend:latest
+          image: docker.io/saurabhkumbhar7/bikes-backend:v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

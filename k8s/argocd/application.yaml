@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_ORG/YOUR_REPO.git
+    repoURL: https://github.com/iemaserver/k8s-3tier-test.git
     targetRevision: main
     path: k8s/base
   destination:

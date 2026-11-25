@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/YOUR_GITHUB_USERNAME/bikes-frontend:latest
+          image: docker.io/saurabhkumbhar7/bikes-frontend:v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

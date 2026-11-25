@@ -4,8 +4,22 @@ Argo CD uses a pull-based deployment model: it reads the manifests from this Git
 
 ## Configure before deploying
 
-1. Replace `YOUR_ORG/YOUR_REPO` and `main` in `argocd/application.yaml` with the GitHub repository and branch containing these files.
-2. Replace `YOUR_GITHUB_USERNAME` in the three image names under `base/` with the owner of the published GHCR images. Build and push the backend, frontend, and MongoDB images from the existing Dockerfiles first. Argo CD deploys images; it does not build them. For each release, publish versioned image tags and update the matching tags in Git; that Git change is what triggers a rollout.
+1. `argocd/application.yaml` should point to the GitHub repository and branch containing these manifests.
+2. The image references use the Docker Hub account `saurabhkumbhar7`. Build and push the images from the existing Dockerfiles, then commit and push the manifests to GitHub. Argo CD deploys images; it does not build them. For each release, publish a new versioned tag and update the matching tag in Git; that Git change triggers a rollout.
+
+Build and publish the initial `v1` images from the project root (replace the username first):
+
+```powershell
+docker login --username saurabhkumbhar7
+docker build -t docker.io/saurabhkumbhar7/bikes-backend:v1 ./backend
+docker build -t docker.io/saurabhkumbhar7/bikes-frontend:v1 ./frontend
+docker build -t docker.io/saurabhkumbhar7/bikes-mongodb:v1 ./mongodb
+docker push docker.io/saurabhkumbhar7/bikes-backend:v1
+docker push docker.io/saurabhkumbhar7/bikes-frontend:v1
+docker push docker.io/saurabhkumbhar7/bikes-mongodb:v1
+```
+
+At the Docker login password prompt, use a Docker Hub access token with permission to push images. Keep the token out of command history and Git.
 3. Ensure the Kubernetes cluster has a default StorageClass capable of provisioning a 5Gi `ReadWriteOnce` volume. The MongoDB StatefulSet is intentionally a single replica; it is persistent but not a highly available MongoDB replica set.
 4. Create the runtime Secret outside Git. Choose strong values and keep them out of source control. Keep the app password URI-safe (letters, numbers, `_`, or `-`) because the backend builds its MongoDB connection URI from it:
 
@@ -19,7 +33,7 @@ kubectl create secret generic bikes-secrets -n bikes `
   --from-literal=MONGO_APP_PASSWORD='<strong-uri-safe-app-password>'
 ```
 
-For a private GHCR repository, also configure an `imagePullSecret` in the `bikes` namespace and reference it from each workload's pod spec.
+For private Docker Hub repositories, configure an `imagePullSecret` in the `bikes` namespace and reference it from each workload's pod spec. Public repositories do not need a pull secret.
 
 ## Install and sync
 
