@@ -1,0 +1,55 @@
+services:
+  mongodb:
+    build: ./mongodb
+    image: bikes-mongodb:latest
+    container_name: bikes-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-admin123}
+      MONGO_APP_DB: ${MONGO_APP_DB:-bikesdb}
+      MONGO_APP_USER: ${MONGO_APP_USER:-bikeapp}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:-bikeapp123}
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "${MONGO_PORT:-27017}:27017"   # remove this if you don't need DB access from the host
+    networks:
+      - bikes-net
+
+  backend:
+    build: ./backend
+    image: bikes-backend:latest
+    container_name: bikes-backend
+    restart: unless-stopped
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://${MONGO_APP_USER:-bikeapp}:${MONGO_APP_PASSWORD:-bikeapp123}@mongodb:27017/${MONGO_APP_DB:-bikesdb}?authSource=${MONGO_APP_DB:-bikesdb}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      # host:container — host side defaults to 5001 because 5000 is often taken
+      # (e.g. by another project or macOS AirPlay). Override with BACKEND_PORT in .env.
+      - "${BACKEND_PORT:-5001}:5000"
+    networks:
+      - bikes-net
+
+  frontend:
+    build: ./frontend
+    image: bikes-frontend:latest
+    container_name: bikes-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:8080"
+    networks:
+      - bikes-net
+
+volumes:
+  mongo-data:
+
+networks:
+  bikes-net:
