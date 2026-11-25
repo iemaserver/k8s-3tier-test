@@ -11,6 +11,8 @@ Argo CD uses a pull-based deployment model: it reads the manifests from this Git
 
 The workflow at `.github/workflows/build-and-deploy.yml` runs when changes to `backend/`, `frontend/`, or `mongodb/` are pushed to `main`. It builds all three images, tags them with the source commit SHA, pushes them to Docker Hub, and commits the new tags to `k8s/base/kustomization.yaml`. Argo CD then detects that Git change and deploys the new images. A pull request does not deploy until its changes are pushed or merged into `main`.
 
+The Bike Garage header shows `BUILD` followed by the short commit SHA embedded in the frontend image. After Argo CD syncs a release, compare that value with the GitHub Actions commit to confirm the updated frontend is live. Local development shows `LOCAL`.
+
 Before relying on the workflow, add these repository Actions secrets in GitHub under **Settings > Secrets and variables > Actions**:
 
 - `DOCKERHUB_USERNAME`: `saurabhkumbhar7`

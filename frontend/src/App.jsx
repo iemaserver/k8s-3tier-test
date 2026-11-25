@@ -4,6 +4,8 @@ import BikeCard from './components/BikeCard.jsx';
 import BikeDetails from './components/BikeDetails.jsx';
 import BikeForm from './components/BikeForm.jsx';
 
+const buildSha = import.meta.env.VITE_BUILD_SHA || 'local';
+
 export default function App() {
   const [bikes, setBikes] = useState([]);
   const [search, setSearch] = useState('');
@@ -67,6 +69,13 @@ export default function App() {
         <div className="brand">
           <span className="logo">🏍️</span>
           <h1>Bike Garage</h1>
+          <span
+            className={`build-stamp${buildSha === 'local' ? ' local' : ''}`}
+            title={buildSha === 'local' ? 'Local development build' : `Commit ${buildSha}`}
+          >
+            <span className="build-dot" aria-hidden="true" />
+            {buildSha === 'local' ? 'LOCAL' : `BUILD ${buildSha.slice(0, 7)}`}
+          </span>
         </div>
         <div className="header-actions">
           <input

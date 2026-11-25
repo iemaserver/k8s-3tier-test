@@ -1,5 +1,7 @@
 # ---------- Stage 1: build the React app ----------
 FROM node:22-alpine AS build
+ARG VITE_BUILD_SHA=local
+ENV VITE_BUILD_SHA=$VITE_BUILD_SHA
 WORKDIR /app
 COPY package*.json ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
