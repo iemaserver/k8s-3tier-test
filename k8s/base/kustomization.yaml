@@ -6,8 +6,8 @@ resources:
   - frontend.yaml
 images:
   - name: docker.io/saurabhkumbhar7/bikes-backend
-    newTag: v1
+    newTag: a6d48ef209502c2b9413ed1e97072e26cc20638f
   - name: docker.io/saurabhkumbhar7/bikes-frontend
-    newTag: v1
+    newTag: a6d48ef209502c2b9413ed1e97072e26cc20638f
   - name: docker.io/saurabhkumbhar7/bikes-mongodb
-    newTag: v1
+    newTag: a6d48ef209502c2b9413ed1e97072e26cc20638f
