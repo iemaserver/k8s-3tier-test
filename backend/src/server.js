@@ -12,7 +12,7 @@ app.use(express.json({ limit: '1mb' }));
 
 app.get('/api/health', (req, res) => {
   const db = mongoose.connection.readyState === 1 ? 'up' : 'down';
-  res.status(db === 'up' ? 200 : 503).json({ status: 'ok', db });
+  res.status(db === 'up' ? 200 : 503).json({ status: 'ok for now', db });
 });
 
 app.use('/api/bikes', bikeRoutes);
